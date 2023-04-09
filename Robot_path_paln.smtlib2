@@ -1,0 +1,154 @@
+(set-logic QF_LIA)
+
+; Define the variables
+(declare-fun cell-1-1 () Int)
+(declare-fun cell-1-2 () Int)
+(declare-fun cell-1-3 () Int)
+(declare-fun cell-1-4 () Int)
+(declare-fun cell-2-1 () Int)
+(declare-fun cell-2-2 () Int)
+(declare-fun cell-2-3 () Int)
+(declare-fun cell-2-4 () Int)
+(declare-fun cell-3-1 () Int)
+(declare-fun cell-3-2 () Int)
+(declare-fun cell-3-3 () Int)
+(declare-fun cell-3-4 () Int)
+(declare-fun cell-4-1 () Int)
+(declare-fun cell-4-2 () Int)
+(declare-fun cell-4-3 () Int)
+(declare-fun cell-4-4 () Int)
+(declare-fun move-up () Bool)
+(declare-fun move-down () Bool)
+(declare-fun move-left () Bool)
+(declare-fun move-right () Bool)
+(declare-fun steps () Int)
+
+
+; Define the domain of the variables
+(assert (and (<= cell-1-1 1) (>= cell-1-1 0)))
+(assert (and (<= cell-1-2 1) (>= cell-1-2 0)))
+(assert (and (<= cell-1-3 1) (>= cell-1-3 0)))
+(assert (and (<= cell-1-4 1) (>= cell-1-4 0)))
+(assert (and (<= cell-2-1 1) (>= cell-2-1 0)))
+(assert (and (<= cell-2-2 1) (>= cell-2-2 0)))
+(assert (and (<= cell-2-3 1) (>= cell-2-3 0)))
+(assert (and (<= cell-2-4 1) (>= cell-2-4 0)))
+(assert (and (<= cell-3-1 1) (>= cell-3-1 0)))
+(assert (and (<= cell-3-2 1) (>= cell-3-2 0)))
+(assert (and (<= cell-3-3 1) (>= cell-3-3 0)))
+(assert (and (<= cell-3-4 1) (>= cell-3-4 0)))
+(assert (and (<= cell-4-1 1) (>= cell-4-1 0)))
+(assert (and (<= cell-4-2 1) (>= cell-4-2 0)))
+(assert (and (<= cell-4-3 1) (>= cell-4-3 0)))
+(assert (and (<= cell-4-4 1) (>= cell-4-4 0)))
+
+
+; Define the initial state
+(assert (= cell-1-1 1)) ; the robot is in cell (1,1)
+(assert (= cell-1-2 0))
+(assert (= cell-1-3 0))
+(assert (= cell-1-4 0))
+(assert (= cell-2-1 0))
+(assert (= cell-2-2 0))
+(assert (= cell-2-3 0))
+(assert (= cell-2-4 0))
+(assert (= cell-3-1 0))
+(assert (= cell-3-2 0))
+(assert (= cell-3-3 0))
+(assert (= cell-3-4 0))
+(assert (= cell-4-1 0))
+(assert (= cell-4-2 0))
+(assert (= cell-4-3 0))
+(assert (= cell-4-4 0))
+
+; Define the final state
+(assert (= cell-1-1 0))
+(assert (= cell-1-2 0))
+(assert (= cell-1-3 0))
+(assert (= cell-1-4 0))
+(assert (= cell-2-1 0))
+(assert (= cell-2-2 0))
+(assert (= cell-2-3 0))
+(assert (= cell-2-4 0))
+(assert (= cell-3-1 0))
+(assert (= cell-3-2 0))
+(assert (= cell-3-3 0))
+(assert (= cell-3-4 0))
+(assert (= cell-4-1 0))
+(assert (= cell-4-2 0))
+(assert (= cell-4-3 0))
+(assert (= cell-4-4 1)) ; the robot is in cell (4,4)
+
+
+; Add constraints to avoid obstacles
+(assert (not (= cell-2-2 1)))) ; obstacle in cell (2,2)
+(assert (not (= cell-3-3 1)))) ; obstacle in cell (3,3)
+(assert (not (= cell-3-4 1)))) ; obstacle in cell (3,4)
+(assert (not (= cell-4-1 1)))) ; obstacle in cell (4,1)
+
+
+; Add constraint to enforce one robot position at a time
+(assert (or (= cell-1-1 1)
+            (= cell-1-2 1)
+            (= cell-1-3 1)
+            (= cell-1-4 1)
+            (= cell-2-1 1)
+            (= cell-2-2 1)
+            (= cell-2-3 1)
+            (= cell-2-4 1)
+            (= cell-3-1 1)
+            (= cell-3-2 1)
+            (= cell-3-3 1)
+            (= cell-3-4 1)
+            (= cell-4-1 1)
+            (= cell-4-2 1)
+            (= cell-4-3 1)
+            (= cell-4-4 1)))
+
+; Add constraints to enforce adjacency
+(assert (or (and (= cell-1-1 1) (or (= cell-1-2 1) (= cell-2-1 1))))
+            (and (= cell-1-2 1) (or (= cell-1-1 1) (= cell-1-3 1) (= cell-2-2 1))))
+            (and (= cell-1-3 1) (or (= cell-1-2 1) (= cell-1-4 1) (= cell-2-3 1))))
+            (and (= cell-1-4 1) (or (= cell-1-3 1) (= cell-2-4 1))))
+            (and (= cell-2-1 1) (or (= cell-1-1 1) (= cell-2-2 1) (= cell-3-1 1))))
+            (and (= cell-2-2 1) (or (= cell-1-2 1) (= cell-2-1 1) (= cell-2-3 1) (= cell-3-2 1))))
+            (and (= cell-2-3 1) (or (= cell-1-3 1) (= cell-2-2 1) (= cell-2-4 1) (= cell-3-3 1))))
+            (and (= cell-2-4 1) (or (= cell-1-4 1) (= cell-2-3 1) (= cell-3-4 1))))
+            (and (= cell-3-1 1) (or (= cell-2-1 1) (= cell-3-2 1) (= cell-4-1 1))))
+            (and (= cell-3-2 1) (or (= cell-2-2 1) (= cell-3-1 1) (= cell-3-3 1) (= cell-4-2 1))))
+            (and (= cell-3-3 1) (or (= cell-2-3 1) (= cell-3-2 1) (= cell-3-4 1) (= cell-4-3 1))))
+            (and (= cell-3-4 1) (or (= cell-2-4 1) (= cell-3-3 1) (= cell-4-4 1))))
+            (and (= cell-4-1 1) (or (= cell-3-1 1) (= cell-4-2 1))))
+            (and (= cell-4-2 1) (or (= cell-3-2 1) (= cell-4-1 1) (= cell-4-3 1))))
+            (and (= cell-4-3 1) (or (= cell-3-3 1) (= cell-4-2 1) (= cell-4-4 1))))
+            (and (= cell-4-4 1) (or (= cell-3-4 1) (= cell-4-3 1)))))
+
+; Add constraints to enforce obstacle avoidance while moving up
+(assert (=> (= next-row (- row 1))
+             (not (= up-cell 1)))))
+             
+; Add constraints to enforce obstacle avoidance while moving down
+(assert (=> (= next-row (+ row 1))
+             (not (= down-cell 1)))))
+             
+; Add constraints to enforce obstacle avoidance while moving left
+(assert (=> (= next-col (- col 1))
+             (not (= left-cell 1)))))
+             
+; Add constraints to enforce obstacle avoidance while moving right
+(assert (=> (= next-col (+ col 1))
+             (not (= right-cell 1)))))
+             
+; Define the goal
+(assert (= row-4 4))
+(assert (= col-4 4))
+
+; Define the objective function
+(define-fun total-moves () Int
+  (+ up + down + left + right))
+  
+
+; Add the objective
+(minimize total-moves)
+
+
